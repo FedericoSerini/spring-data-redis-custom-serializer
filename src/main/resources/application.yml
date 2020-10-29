@@ -1,0 +1,6 @@
+logging:
+  level:
+    it:
+      federicoserini: INFO
+    org:
+      springframework: INFO
