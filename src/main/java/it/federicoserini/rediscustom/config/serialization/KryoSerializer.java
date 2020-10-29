@@ -18,11 +18,7 @@ public class KryoSerializer {
     private static Pool<Kryo> initializePool(){
         return new Pool<Kryo>(true, false, 8) {
             protected Kryo create () {
-                Kryo kryo = new Kryo();
-
-                // TODO registra componenti
-                kryo.setRegistrationRequired(false);
-                return kryo;
+               return new Kryo();
             }
         };
     }
@@ -31,6 +27,7 @@ public class KryoSerializer {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Output output = new Output(stream);
         Kryo kryoPoolElement = pool.obtain();
+        kryoPoolElement.register(object.getClass());
         kryoPoolElement.writeClassAndObject(output, object);
         output.close();
         pool.free(kryoPoolElement);
@@ -42,7 +39,6 @@ public class KryoSerializer {
         Kryo kryoPoolElement = pool.obtain();
         O deserializedObject = (O) kryoPoolElement.readClassAndObject(new Input(dataStream));
         pool.free(kryoPoolElement);
-
         return deserializedObject;
     }
 }
